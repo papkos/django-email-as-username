@@ -15,7 +15,7 @@ class CreateUserTests(TestCase):
 
     def test_can_create_user(self):
         user = create_user(self.email, self.password)
-        self.assertEquals(list(User.objects.all()), [user])
+        self.assertEqual(list(User.objects.all()), [user])
 
     def test_can_create_user_with_long_email(self):
         padding = 'a' * 30
@@ -23,7 +23,7 @@ class CreateUserTests(TestCase):
 
     def test_created_user_has_correct_details(self):
         user = create_user(self.email, self.password)
-        self.assertEquals(user.email, self.email)
+        self.assertEqual(user.email, self.email)
 
     def test_can_create_user_with_explicit_id(self):
         """Regression test for
@@ -46,29 +46,29 @@ class ExistingUserTests(TestCase):
 
     def test_user_can_authenticate(self):
         auth = authenticate(email=self.email, password=self.password)
-        self.assertEquals(self.user, auth)
+        self.assertEqual(self.user, auth)
 
     def test_user_can_authenticate_with_case_insensitive_match(self):
         auth = authenticate(email=self.email.upper(), password=self.password)
-        self.assertEquals(self.user, auth)
+        self.assertEqual(self.user, auth)
 
     def test_user_can_authenticate_with_username_parameter(self):
         auth = authenticate(username=self.email, password=self.password)
-        self.assertEquals(self.user, auth)
+        self.assertEqual(self.user, auth)
         # Invalid username should be ignored
         auth = authenticate(email=self.email, password=self.password,
                             username='invalid')
-        self.assertEquals(self.user, auth)
+        self.assertEqual(self.user, auth)
 
     def test_user_emails_are_unique(self):
         with self.assertRaises(IntegrityError) as ctx:
             create_user(self.email, self.password)
-        self.assertEquals(ctx.exception.message, 'user email is not unique')
+        self.assertEqual(str(ctx.exception), 'user email is not unique')
 
     def test_user_emails_are_case_insensitive_unique(self):
         with self.assertRaises(IntegrityError) as ctx:
             create_user(self.email.upper(), self.password)
-        self.assertEquals(ctx.exception.message, 'user email is not unique')
+        self.assertEqual(str(ctx.exception), 'user email is not unique')
 
     def test_user_unicode(self):
-        self.assertEquals(unicode(self.user), self.email)
+        self.assertEqual(str(self.user), self.email)

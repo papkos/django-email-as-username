@@ -55,9 +55,10 @@ def create_user(email, password=None, is_staff=None, is_active=None):
     """
     try:
         user = User.objects.create_user(email, email, password)
-    except IntegrityError, err:
+    except IntegrityError as err:
         regexp = '|'.join(re.escape(e) for e in _DUPLICATE_USERNAME_ERRORS)
-        if re.match(regexp, err.message):
+        #if re.match(regexp, err.message):
+        if re.match(regexp, str(err)):
             raise IntegrityError('user email is not unique')
         raise
 
